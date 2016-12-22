@@ -1,3 +1,3 @@
 #React Redux Blog App
 
-See <a href=''>the demo</a>
+See <a href='http://kurumkan-redux-blog.herokuapp.com/'>the demo</a>
