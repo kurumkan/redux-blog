@@ -30853,7 +30853,7 @@
 	}
 
 	function deletePost(id) {
-		var request = _axios2.default.get(ROOT_URL + id + API_KEY);
+		var request = _axios2.default.delete(ROOT_URL + id + API_KEY);
 
 		return {
 			type: 'DELETE_POST',
@@ -32553,6 +32553,16 @@
 			key: 'componentWillMount',
 			value: function componentWillMount() {
 				this.props.fetchPost(this.props.params.id);
+				this.handleDelete = this.handleDelete.bind(this);
+			}
+		}, {
+			key: 'handleDelete',
+			value: function handleDelete(e) {
+				var _this2 = this;
+
+				this.props.deletePost(this.props.params.id).then(function () {
+					_this2.context.router.push('/');
+				});
 			}
 		}, {
 			key: 'render',
@@ -32569,6 +32579,16 @@
 				return _react2.default.createElement(
 					'div',
 					null,
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: '/' },
+						'Back To Main Page'
+					),
+					_react2.default.createElement(
+						'button',
+						{ className: 'btn btn-danger pull-right', onClick: this.handleDelete },
+						'Delete Post'
+					),
 					_react2.default.createElement(
 						'h3',
 						null,
@@ -32592,11 +32612,16 @@
 		return PostsShow;
 	}(_react.Component);
 
+	PostsShow.contextTypes = {
+		router: _react.PropTypes.object
+	};
+
+
 	function mapStateToProps(state) {
 		return { post: state.posts.post };
 	}
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPost: _actions.fetchPost })(PostsShow);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPost: _actions.fetchPost, deletePost: _actions.deletePost })(PostsShow);
 
 /***/ }
 /******/ ]);

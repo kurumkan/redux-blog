@@ -30,7 +30,7 @@ export function fetchPost(id){
 }
 
 export function deletePost(id){
-	var request = axios.get(ROOT_URL+id+API_KEY);
+	var request = axios.delete(ROOT_URL+id+API_KEY);
 	
 	return {
 		type: 'DELETE_POST',
