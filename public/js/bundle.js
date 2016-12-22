@@ -30709,10 +30709,13 @@
 	var PostsIndex = function (_Component) {
 		_inherits(PostsIndex, _Component);
 
-		function PostsIndex() {
+		function PostsIndex(props) {
 			_classCallCheck(this, PostsIndex);
 
-			return _possibleConstructorReturn(this, (PostsIndex.__proto__ || Object.getPrototypeOf(PostsIndex)).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, (PostsIndex.__proto__ || Object.getPrototypeOf(PostsIndex)).call(this, props));
+
+			_this.renderPosts = _this.renderPosts.bind(_this);
+			return _this;
 		}
 
 		_createClass(PostsIndex, [{
@@ -30721,21 +30724,51 @@
 				this.props.fetchPosts();
 			}
 		}, {
+			key: 'renderPosts',
+			value: function renderPosts() {
+				return this.props.posts.map(function (post) {
+					return _react2.default.createElement(
+						'li',
+						{ className: 'list-group-item', key: post.id },
+						_react2.default.createElement(
+							'span',
+							{ className: 'pull-right' },
+							post.categories
+						),
+						_react2.default.createElement(
+							'strong',
+							null,
+							post.title
+						)
+					);
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
+
 				return _react2.default.createElement(
 					'div',
 					null,
 					_react2.default.createElement(
 						'div',
-						{ className: 'text-xs-right' },
+						{ className: 'pull-right' },
 						_react2.default.createElement(
 							_reactRouter.Link,
 							{ className: 'btn btn-success', to: '/posts/new' },
 							'Create a Post'
 						)
 					),
-					'List of blogs'
+					_react2.default.createElement(
+						'h3',
+						null,
+						'Posts'
+					),
+					_react2.default.createElement(
+						'ul',
+						{ className: 'list-group' },
+						this.renderPosts()
+					)
 				);
 			}
 		}]);
@@ -30743,7 +30776,11 @@
 		return PostsIndex;
 	}(_react.Component);
 
-	exports.default = (0, _reactRedux.connect)(null, { fetchPosts: _index.fetchPosts })(PostsIndex);
+	function mapStateToProps(state) {
+		return { posts: state.posts.all };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPosts: _index.fetchPosts })(PostsIndex);
 
 /***/ },
 /* 311 */
