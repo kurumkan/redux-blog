@@ -19,3 +19,21 @@ export function createPost(post){
 		payload: request
 	}
 }
+
+export function fetchPost(id){
+	var request = axios.get(ROOT_URL+id+API_KEY);
+
+	return {
+		type: 'FETCH_POST',
+		payload: request
+	}
+}
+
+export function deletePost(id){
+	var request = axios.get(ROOT_URL+id+API_KEY);
+	
+	return {
+		type: 'DELETE_POST',
+		payload: request
+	}	
+}

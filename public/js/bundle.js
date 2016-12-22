@@ -27685,6 +27685,18 @@
 				return _extends({}, state, {
 					all: [action.payload.data].concat(_toConsumableArray(state.all))
 				});
+			case 'FETCH_POST':
+				return _extends({}, state, {
+					post: action.payload.data
+				});
+
+			case 'DELETE_POST':
+				return _extends({}, state, {
+					all: state.all.filter(function (post) {
+						return action.payload.data.id !== post.id;
+					})
+				});
+
 			default:
 				return state;
 		}
@@ -30618,13 +30630,18 @@
 
 	var _posts_new2 = _interopRequireDefault(_posts_new);
 
+	var _posts_show = __webpack_require__(338);
+
+	var _posts_show2 = _interopRequireDefault(_posts_show);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createElement(
 		_reactRouter.Route,
 		{ path: '/', component: _app2.default },
 		_react2.default.createElement(_reactRouter.IndexRoute, { component: _posts_index2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/posts/new', component: _posts_new2.default })
+		_react2.default.createElement(_reactRouter.Route, { path: '/posts/new', component: _posts_new2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/posts/:id', component: _posts_show2.default })
 	);
 
 /***/ },
@@ -30731,14 +30748,18 @@
 						'li',
 						{ className: 'list-group-item', key: post.id },
 						_react2.default.createElement(
-							'span',
-							{ className: 'pull-right' },
-							post.categories
-						),
-						_react2.default.createElement(
-							'strong',
-							null,
-							post.title
+							_reactRouter.Link,
+							{ to: 'posts/' + post.id },
+							_react2.default.createElement(
+								'span',
+								{ className: 'pull-right' },
+								post.categories
+							),
+							_react2.default.createElement(
+								'strong',
+								null,
+								post.title
+							)
 						)
 					);
 				});
@@ -30793,6 +30814,8 @@
 	});
 	exports.fetchPosts = fetchPosts;
 	exports.createPost = createPost;
+	exports.fetchPost = fetchPost;
+	exports.deletePost = deletePost;
 
 	var _axios = __webpack_require__(312);
 
@@ -30816,6 +30839,24 @@
 
 		return {
 			type: 'CREATE_POST',
+			payload: request
+		};
+	}
+
+	function fetchPost(id) {
+		var request = _axios2.default.get(ROOT_URL + id + API_KEY);
+
+		return {
+			type: 'FETCH_POST',
+			payload: request
+		};
+	}
+
+	function deletePost(id) {
+		var request = _axios2.default.get(ROOT_URL + id + API_KEY);
+
+		return {
+			type: 'DELETE_POST',
 			payload: request
 		};
 	}
@@ -32468,6 +32509,94 @@
 		fields: ['title', 'categories', 'content'],
 		validate: validate
 	}, null, { createPost: _actions.createPost })(PostsNew);
+
+/***/ },
+/* 338 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _reactRouter = __webpack_require__(200);
+
+	var _actions = __webpack_require__(311);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PostsShow = function (_Component) {
+		_inherits(PostsShow, _Component);
+
+		function PostsShow() {
+			_classCallCheck(this, PostsShow);
+
+			return _possibleConstructorReturn(this, (PostsShow.__proto__ || Object.getPrototypeOf(PostsShow)).apply(this, arguments));
+		}
+
+		_createClass(PostsShow, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.props.fetchPost(this.props.params.id);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var post = this.props.post;
+
+
+				if (!post) return _react2.default.createElement(
+					'div',
+					null,
+					'Loading ... '
+				);
+
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'h3',
+						null,
+						post.title
+					),
+					_react2.default.createElement(
+						'h6',
+						null,
+						'Categories: ',
+						post.categories
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						post.content
+					)
+				);
+			}
+		}]);
+
+		return PostsShow;
+	}(_react.Component);
+
+	function mapStateToProps(state) {
+		return { post: state.posts.post };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPost: _actions.fetchPost })(PostsShow);
 
 /***/ }
 /******/ ]);

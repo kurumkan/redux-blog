@@ -19,6 +19,19 @@ export default function(state=INITAIL_STATE,action){
 					...state.all
 				]
 			}	
+		case 'FETCH_POST':
+			return {
+				...state,
+				post: action.payload.data
+			}
+
+		case 'DELETE_POST':
+			return {
+				...state,
+				all: state.all.filter((post)=>action.payload.data.id!==post.id)
+			}
+
+			
 		default:
 			return state;
 	}
